@@ -1,6 +1,6 @@
 # PawPal+ (Module 2 Project)
 
-A intelligent pet care planning assistant built with Python and Streamlit. **PawPal+** helps busy pet owners manage their pets' care tasks by generating optimized daily schedules based on time constraints, task priorities, and pet needs.
+An intelligent pet care planning assistant built with Python and Streamlit. **PawPal+** helps busy pet owners manage their pets' care tasks by generating optimized daily schedules based on time constraints, task priorities, and pet needs.
 
 ## Features
 
@@ -10,7 +10,7 @@ A intelligent pet care planning assistant built with Python and Streamlit. **Paw
 - **Task Management**: Create tasks with duration, priority, and frequency
 - **Intelligent Scheduling**: Generate daily plans that respect time constraints and priorities
 
-### Smart Scheduling
+### Smarter Scheduling
 - **Priority-based Planning**: Sort tasks by importance (1-5 scale)
 - **Time-based Scheduling**: Organize tasks chronologically
 - **Conflict Detection**: Identify overlapping task times
@@ -63,7 +63,11 @@ streamlit run app.py
 The app will open at `http://localhost:8501`. Start by creating an owner profile, adding pets, and building your task list.
 
 ### 📸 Demo
-<a href="Lena Ngo Final Streamlit App.png" target="_blank"><img src='Lena Ngo Final Streamlit App.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
+<a href="pawpal_screenshot.png" target="_blank"><img src='pawpal_screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
+
+## System Architecture (UML)
+
+![UML Diagram](./uml_final.png)
 
 ### Run the CLI Demo
 
@@ -85,6 +89,11 @@ This demonstrates all system features in the terminal, showing:
 
 ```bash
 python -m pytest tests/test_pawpal.py -v
+```
+
+Run tests:
+```bash
+python -m pytest
 ```
 
 ### Test Coverage
@@ -252,6 +261,15 @@ Streamlit's `st.session_state` provides:
 - [ ] Health tracking (vet appointments, growth)
 - [ ] Export schedules to PDF/iCal
 - [ ] Notification reminders
+
+## AI-Assisted Development
+
+This project was built using GitHub Copilot to:
+- Generate class structures
+- Suggest scheduling algorithms
+- Create test cases
+
+All AI-generated code was reviewed and refined manually.
 
 ## Development Workflow
 

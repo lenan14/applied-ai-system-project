@@ -39,11 +39,14 @@ My initial design includes four core classes and two enumerations (or like a lis
 5. Enums - TaskType and PetType for type safety and clarity
 
 Key Design Decisions:
-- Used Python dataclasses for clean, minimal boilerplate
-- Task priority (1-5 scale) allows ranking importance
-- Optional assigned_pet field supports both pet-specific and general tasks
-- Scheduler holds references to Owner, Pets, and Tasks - it's the central component
-- Relationships: Scheduler manages 1 Owner, schedules for multiple Pets, organizes multiple Tasks
+   - Used Python dataclasses for clean, minimal boilerplate
+   - Task priority (1-5 scale) allows ranking importance
+   - Optional assigned_pet field supports both pet-specific and general tasks
+   - Scheduler holds references to Owner, Pets, and Tasks - it's the central component
+   - Relationships: Scheduler manages 1 Owner, schedules for multiple Pets, organizes multiple Tasks
+
+## Final UML Diagram
+![PawPal+ UML Diagram](uml_final.png)
 
 **b. Design changes**
 
@@ -76,11 +79,11 @@ During implementation in Phases 2-3, several design changes enhanced the system:
 
 Summary of Implementation vs. Initial Design
 The skeleton provided an excellent structure, but the real-world application required:
-- Task lifecycle methods (complete/incomplete)
-- Explicit time scheduling and conflict detection
-- Sorting and filtering algorithms
-- Recurring task automation
-- Data validation throughout
+   - Task lifecycle methods (complete/incomplete)
+   - Explicit time scheduling and conflict detection
+   - Sorting and filtering algorithms
+   - Recurring task automation
+   - Data validation throughout
 
 Initial implementation phase: No changes yet. This skeleton will be reviewed and refined during implementation as we build out the scheduling logic in Phase 2-3.
 
@@ -113,10 +116,10 @@ My scheduler considers the following constraints:
    - Design allows for future constraint checking: `pet.has_constraint("senior")`
 
 **Decision Process:**
-- Time and priority are essential (included immediately)
-- Special needs are tracked but not yet enforced (added for extensibility)
-- Owner preferences are partially implemented via availability hours
-- We prioritized: 1) Time 2) Priority 3) Duration 4) Pet needs
+   - Time and priority are essential (included immediately)
+   - Special needs are tracked but not yet enforced (added for extensibility)
+   - Owner preferences are partially implemented via availability hours
+   - We prioritized: 1) Time 2) Priority 3) Duration 4) Pet needs
 
 **Reasoning:**
 A busy owner cares most about whether tasks fit in their schedule. Among feasible options, higher-priority tasks (medications, essential care) must come first. Task duration is secondary: it's already factored into whether a task fits.
@@ -126,33 +129,33 @@ A busy owner cares most about whether tasks fit in their schedule. Among feasibl
 Tradeoff 1: Exact Time Matching vs. Duration Overlaps
 
 Current Implementation: Conflict detection only flags tasks scheduled at the EXACT same time (e.g., "07:00").
-- Code: `if task1.scheduled_time == task2.scheduled_time: conflicts.append(...)`
+   - Code: `if task1.scheduled_time == task2.scheduled_time: conflicts.append(...)`
 
 Better Approach: Check for overlapping durations
-- Example: "Walk 7:00-7:30" vs "Feed 7:20-7:30" = overlap, should warn
+   - Example: "Walk 7:00-7:30" vs "Feed 7:20-7:30" = overlap, should warn
 
 Why We Chose Exact Matching:
-- Task durations are estimates, not exact
-- For pet care, ~10 min flexibility is acceptable
-- Simpler algorithm, easier to debug
-- Sufficient for MVP; users can manually adjust
+   - Task durations are estimates, not exact
+   - For pet care, ~10 min flexibility is acceptable
+   - Simpler algorithm, easier to debug
+   - Sufficient for MVP; users can manually adjust
 
 ---
 
 **Tradeoff 2: Greedy Priority Packing vs. Optimization**
 
 *Current Implementation:* Sort by priority, then greedily fit tasks first-come-first-served.
-- Code: `for task in sorted_tasks: if time_used + task.duration_minutes <= available: plan.append(task)`
+   - Code: `for task in sorted_tasks: if time_used + task.duration_minutes <= available: plan.append(task)`
 
 *Better Approach:* Use constraint satisfaction or linear programming to find optimal subset.
-- Would need `scipy.optimize` or similar
-- Returns globally best schedule
+   - Would need `scipy.optimize` or similar
+   - Returns globally best schedule
 
 *Why We Chose Greedy:*
-- Greedy is O(n log n) vs O(2^n) for optimal
-- Intuitive to explain to users ("high priority first")
-- Works well in practice for small task sets (*n < 50)
-- Sufficient for MVP; can optimize later
+   - Greedy is O(n log n) vs O(2^n) for optimal
+   - Intuitive to explain to users ("high priority first")
+   - Works well in practice for small task sets (*n < 50)
+   - Sufficient for MVP; can optimize later
 
 *Trade-off Value:* 8/10 reasonable — best for user understanding
 
@@ -163,15 +166,15 @@ Why We Chose Exact Matching:
 *Current Implementation:* All data stored in `st.session_state` dictionaries. Lost on page reload.
 
 *Better Approach:* Use SQLite, PostgreSQL, or Firebase for persistence.
-- Survives app refresh
-- Multi-user support
-- Long-term analytics
+   - Survives app refresh
+   - Multi-user support
+   - Long-term analytics
 
 *Why We Chose In-Memory:*
-- No deployment/database setup overhead
-- Fast for learning project
-- Clear data flow: no database bugs to debug
-- Sufficient for MVP; Streamlit best-practice for demo apps
+   - No deployment/database setup overhead
+   - Fast for learning project
+   - Clear data flow: no database bugs to debug
+   - Sufficient for MVP; Streamlit best-practice for demo apps
 
 *Trade-off Value:* 7/10 reasonable — acceptable for learning, not production
 
@@ -217,18 +220,18 @@ I used GitHub Copilot throughout this project in several key ways:
    - Updated reflection with detailed design decisions
 
 **Most Helpful Prompts:**
-- "Implement the full Task class with validation, completion tracking, and details formatting"
-  → Got clean, well-structured code in one response
-- "Generate pytest tests for sorting, conflict detection, and recurring tasks"
-  → AI understood the logic and created appropriate test cases
-- "Create a Streamlit UI that imports pawpal_system and manages Owner/Pet/Task objects"
-  → Generated the full 4-tab interface with session state
-- "Write a professional README explaining the system architecture and design decisions"
-  → Produced comprehensive documentation with sections on algorithms and tradeoffs
+   - "Implement the full Task class with validation, completion tracking, and details formatting"
+   → Got clean, well-structured code in one response
+   - "Generate pytest tests for sorting, conflict detection, and recurring tasks"
+   → AI understood the logic and created appropriate test cases
+   - "Create a Streamlit UI that imports pawpal_system and manages Owner/Pet/Task objects"
+   → Generated the full 4-tab interface with session state
+   - "Write a professional README explaining the system architecture and design decisions"
+   → Produced comprehensive documentation with sections on algorithms and tradeoffs
 
 Which Copilot features were most effective for building your scheduler?
 
-**Most Valuable AI Feature:** Inline code generation in context (knowing what classes exist in the file)
+**Most Efficient/Valuable AI Feature:** Inline code generation in context (knowing what classes exist in the file)
 
 **b. Judgment and verification**
 
@@ -251,17 +254,17 @@ def detect_conflicts(self):
 ```
 
 *My Evaluation:*
-✅ **Correct logic** — Properly checks all pairs exactly once
-✅ **Efficient** — O(n²) which is acceptable for small task sets
-✅ **Clean** — Easy to understand and maintain
+**Correct logic** — Properly checks all pairs exactly once
+**Efficient** — O(n²) which is acceptable for small task sets
+**Clean** — Easy to understand and maintain
 
 *What I Modified:*
 Originally, Copilot suggested checking ALL tasks including completed ones. I added the `not task.is_completed` guards to only flag "active" conflicts.
 
 **Why I Made This Change:**
-- A completed task shouldn't cause a scheduling conflict (it's done!)
-- More useful for real users: only warns about things they need to fix
-- Verified by running tests: all 28 still pass with this addition
+   - A completed task shouldn't cause a scheduling conflict (it's done!)
+   - More useful for real users: only warns about things they need to fix
+   - Verified by running tests: all 28 still pass with this addition
 
 **Example 2: Recurring Task Implementation**
 
@@ -272,10 +275,10 @@ Copilot initially suggested importing `datetime.timedelta` and calculating "tomo
 Rejected this approach. Instead, I store the `scheduled_time` ("07:00") and let users handle the date shift manually.
 
 *Rationale:*
-- Simpler for MVP: recurring tasks reuse the same time slot
-- Avoids timezone complexity
-- Matches user mental model: "daily walk happens at 7am, every day"
-- More predictable: same time means same schedule structure
+   - Simpler for MVP: recurring tasks reuse the same time slot
+   - Avoids timezone complexity
+   - Matches user mental model: "daily walk happens at 7am, every day"
+   - More predictable: same time means same schedule structure
 
 *Verification:*
 Tested with `test_scheduler_handle_recurring_task()` — task properly copies name, duration, priority, and maintains incomplete status. ✓
@@ -329,18 +332,18 @@ Our test suite covers 28 distinct test cases across 5 major categories:
    - Full workflow: owner → pets → tasks → schedule
 
 **Why These Tests Matter:**
-- **Edge cases**: Empty task lists, no pets, zero-duration tasks, invalid priorities
-- **Core behavior**: Scheduling algorithm, time constraints, priority ordering
-- **Reliability**: Conflict detection prevents data corruption
-- **Integration**: Multi-pet systems with recurring tasks must work together
+   - **Edge cases**: Empty task lists, no pets, zero-duration tasks, invalid priorities
+   - **Core behavior**: Scheduling algorithm, time constraints, priority ordering
+   - **Reliability**: Conflict detection prevents data corruption
+   - **Integration**: Multi-pet systems with recurring tasks must work together
 
-**Test Results:** ✅ 28/28 passed (100% success rate)
+**Test Results:** 28/28 passed (100% success rate)
 
 ---
 
 **b. Confidence**
 
-**Confidence Level: ⭐⭐⭐⭐⭐ (5/5 stars)**
+**Confidence Level: (5/5 stars)**
 
 I'm very confident in the scheduler's correctness because:
 
@@ -351,19 +354,19 @@ I'm very confident in the scheduler's correctness because:
 5. **Green checkmarks** — All 28 tests pass consistently
 
 **What Was Rigorously Tested:**
-✅ Priority sorting (high priority tasks come first)
-✅ Time-based sorting (chronological ordering)
-✅ Constraint checking (available time limits)
-✅ Conflict detection (duplicate times flag correctly)
-✅ Task recurrence (daily tasks auto-generate)
-✅ State transitions (incomplete → complete → recurs)
+Priority sorting (high priority tasks come first)
+Time-based sorting (chronological ordering)
+Constraint checking (available time limits)
+Conflict detection (duplicate times flag correctly)
+Task recurrence (daily tasks auto-generate)
+State transitions (incomplete → complete → recurs)
 
 **What Could Use More Testing (if time allowed):**
-❓ Duration overlap detection (not just exact time matches)
-❓ Very large task sets (100+ tasks, performance profile)
-❓ Special needs enforcement (senior pet constraints)
-❓ Multi-user concurrency (Streamlit session sharing)
-❓ Persistence across app restarts (would need database)
+Duration overlap detection (not just exact time matches)
+Very large task sets (100+ tasks, performance profile)
+Special needs enforcement (senior pet constraints)
+Multi-user concurrency (Streamlit session sharing)
+Persistence across app restarts (would need database)
 
 **Bottom Line:**
 For a learning project MVP, this scheduling system is solid. The greedy algorithm, conflict detection, and recurrence logic all work reliably. Production use would benefit from duration-overlap detection and persistent storage, but core functionality is battle-tested.
