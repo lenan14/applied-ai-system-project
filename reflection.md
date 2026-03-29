@@ -157,7 +157,7 @@ Why We Chose Exact Matching:
    - Works well in practice for small task sets (*n < 50)
    - Sufficient for MVP; can optimize later
 
-*Trade-off Value:* 8/10 reasonable — best for user understanding
+*Trade-off Value:* 8/10 reasonable - best for user understanding
 
 ---
 
@@ -176,7 +176,7 @@ Why We Chose Exact Matching:
    - Clear data flow: no database bugs to debug
    - Sufficient for MVP; Streamlit best-practice for demo apps
 
-*Trade-off Value:* 7/10 reasonable — acceptable for learning, not production
+*Trade-off Value:* 7/10 reasonable - acceptable for learning, not production
 
 ---
 
@@ -254,9 +254,9 @@ def detect_conflicts(self):
 ```
 
 *My Evaluation:*
-**Correct logic** — Properly checks all pairs exactly once
-**Efficient** — O(n²) which is acceptable for small task sets
-**Clean** — Easy to understand and maintain
+**Correct logic** - Properly checks all pairs exactly once
+**Efficient** - O(n²) which is acceptable for small task sets
+**Clean** - Easy to understand and maintain
 
 *What I Modified:*
 Originally, Copilot suggested checking ALL tasks including completed ones. I added the `not task.is_completed` guards to only flag "active" conflicts.
@@ -281,7 +281,7 @@ Rejected this approach. Instead, I store the `scheduled_time` ("07:00") and let 
    - More predictable: same time means same schedule structure
 
 *Verification:*
-Tested with `test_scheduler_handle_recurring_task()` — task properly copies name, duration, priority, and maintains incomplete status. ✓
+Tested with `test_scheduler_handle_recurring_task()` - task properly copies name, duration, priority, and maintains incomplete status. ✓
 
 How did using separate chat sessions for different phases help you stay organized?
 
@@ -347,11 +347,11 @@ Our test suite covers 28 distinct test cases across 5 major categories:
 
 I'm very confident in the scheduler's correctness because:
 
-1. **High test coverage** — All major paths are tested
-2. **Edge case handling** — Tests include empty lists, invalid inputs, boundary values
-3. **Manual verification** — Ran main.py and verified output matches expected behavior
-4. **Real-world scenario** — Test data matches actual use case (2 pets, 6 tasks)
-5. **Green checkmarks** — All 28 tests pass consistently
+1. **High test coverage** - All major paths are tested
+2. **Edge case handling** - Tests include empty lists, invalid inputs, boundary values
+3. **Manual verification** - Ran main.py and verified output matches expected behavior
+4. **Real-world scenario** - Test data matches actual use case (2 pets, 6 tasks)
+5. **Green checkmarks** - All 28 tests pass consistently
 
 **What Was Rigorously Tested:**
 Priority sorting (high priority tasks come first)
