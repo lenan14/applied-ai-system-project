@@ -95,9 +95,10 @@ def _extract_confidence(text: str) -> float:
     return 0.5
 
 
-def _rule_based_fallback(pet: Pet, tasks: List[Task]) -> str:
-    """Generate basic care reminders without the Gemini API when it is unavailable."""
-    lines = [f"Basic care reminders for {pet.name} ({pet.pet_type.value}, age {pet.age}):"]
+def _rule_based_fallback(pet: Pet, tasks: List[Task], rag_context: str = "") -> str:
+    """Generate care reminders without the Gemini API. Uses RAG context when available."""
+    lines = [f"Care guidelines for {pet.name} ({pet.pet_type.value}, age {pet.age}):"]
+
     if pet.age >= 7:
         lines.append("  - Senior pet: schedule veterinary checkups every 6 months.")
     if any(t.task_type.value == "medication" for t in tasks) or "diabetic" in [
@@ -110,6 +111,11 @@ def _rule_based_fallback(pet: Pet, tasks: List[Task]) -> str:
         lines.append("  - Exercise is important: ensure walks occur at regular intervals.")
     if len(lines) == 1:
         lines.append("  - Keep up with scheduled feeding and enrichment tasks.")
+
+    if rag_context:
+        lines.append("\n**Relevant guidelines from the PawPal knowledge base:**")
+        lines.append(rag_context)
+
     return "\n".join(lines)
 
 
@@ -141,11 +147,6 @@ def get_pet_recommendations(
         logger.warning("Input validation failed: %s", error_msg)
         return f"Input validation failed: {error_msg}", 0.0
 
-    key = api_key or os.environ.get("GOOGLE_API_KEY", "")
-    if not key:
-        logger.warning("GOOGLE_API_KEY not set; using rule-based fallback.")
-        return _rule_based_fallback(pet, tasks), 0.4
-
     task_types = [t.task_type.value for t in tasks]
     rag_context = retrieve_context(
         pet_species=pet.pet_type.value,
@@ -153,6 +154,11 @@ def get_pet_recommendations(
         special_needs=pet.special_needs,
         task_types=task_types,
     )
+
+    key = api_key or os.environ.get("GOOGLE_API_KEY", "")
+    if not key:
+        logger.warning("GOOGLE_API_KEY not set; using rule-based fallback.")
+        return _rule_based_fallback(pet, tasks, rag_context), 0.4
 
     user_prompt = _build_prompt(owner, pet, tasks, rag_context)
 
@@ -176,8 +182,8 @@ def get_pet_recommendations(
             return "API authentication failed. Check your GOOGLE_API_KEY.", 0.0
         if "QUOTA" in str(exc).upper() or "RESOURCE_EXHAUSTED" in str(exc).upper():
             logger.warning("Rate limit hit; using fallback.")
-            fallback = _rule_based_fallback(pet, tasks)
+            fallback = _rule_based_fallback(pet, tasks, rag_context)
             return fallback + "\n\n(Rate limit reached; using rule-based fallback)", 0.3
         logger.error("Gemini API error: %s", str(exc))
-        fallback = _rule_based_fallback(pet, tasks)
+        fallback = _rule_based_fallback(pet, tasks, rag_context)
         return fallback + f"\n\n(AI unavailable: {error_type})", 0.3
