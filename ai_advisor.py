@@ -95,28 +95,81 @@ def _extract_confidence(text: str) -> float:
     return 0.5
 
 
+_SOURCE_LABELS = {
+    "dogs": "Dog Care",
+    "cats": "Cat Care",
+    "medications": "Medication Guidelines",
+    "senior_pets": "Senior Pet Care",
+    "birds_rabbits": "Bird & Rabbit Care",
+}
+
+
+def _format_rag_context(rag_context: str) -> str:
+    """Convert raw RAG context (with [Source: X] labels and # headers) into
+    clean markdown sections for user-facing display."""
+    if not rag_context:
+        return ""
+
+    sections = rag_context.split("\n\n---\n\n")
+    formatted = []
+    for section in sections:
+        lines = section.strip().splitlines()
+        if not lines:
+            continue
+
+        # Extract and remove the [Source: X] label from the first line
+        source_label = ""
+        if lines[0].startswith("[Source:"):
+            match = re.match(r"\[Source:\s*([^\]]+)\]", lines[0])
+            if match:
+                raw_name = match.group(1).strip()
+                source_label = _SOURCE_LABELS.get(raw_name, raw_name.replace("_", " ").title())
+            lines = lines[1:]
+
+        # Strip markdown # headers — they're already grouped under the source label
+        body_lines = []
+        for line in lines:
+            stripped = line.lstrip("#").strip()
+            if stripped:
+                body_lines.append(stripped)
+
+        body = "\n\n".join(
+            p for p in "\n".join(body_lines).split("\n\n") if p.strip()
+        )
+
+        if source_label:
+            formatted.append(f"**{source_label}**\n\n{body}")
+        else:
+            formatted.append(body)
+
+    return "\n\n---\n\n".join(formatted)
+
+
 def _rule_based_fallback(pet: Pet, tasks: List[Task], rag_context: str = "") -> str:
     """Generate care reminders without the Gemini API. Uses RAG context when available."""
-    lines = [f"Care guidelines for {pet.name} ({pet.pet_type.value}, age {pet.age}):"]
-
+    reminders = []
     if pet.age >= 7:
-        lines.append("  - Senior pet: schedule veterinary checkups every 6 months.")
+        reminders.append("Schedule veterinary checkups every 6 months for senior pets.")
     if any(t.task_type.value == "medication" for t in tasks) or "diabetic" in [
         n.lower() for n in pet.special_needs
     ]:
-        lines.append("  - Medication tasks detected: maintain consistent daily timing.")
+        reminders.append("Maintain consistent daily timing for all medications.")
     if any(t.task_type.value == "walk" for t in tasks) or "needs_exercise" in [
         n.lower() for n in pet.special_needs
     ]:
-        lines.append("  - Exercise is important: ensure walks occur at regular intervals.")
-    if len(lines) == 1:
-        lines.append("  - Keep up with scheduled feeding and enrichment tasks.")
+        reminders.append("Ensure walks and exercise occur at regular intervals.")
+    if not reminders:
+        reminders.append("Keep up with scheduled feeding and enrichment tasks.")
+
+    reminder_block = "\n".join(f"- {r}" for r in reminders)
+    output = f"**Reminders for {pet.name}**\n\n{reminder_block}"
 
     if rag_context:
-        lines.append("\n**Relevant guidelines from the PawPal knowledge base:**")
-        lines.append(rag_context)
+        clean_context = _format_rag_context(rag_context)
+        if clean_context:
+            output += f"\n\n---\n\n**From the PawPal Knowledge Base**\n\n{clean_context}"
 
-    return "\n".join(lines)
+    return output
 
 
 def get_pet_recommendations(
