@@ -5,6 +5,8 @@ Gemini AI-powered recommendations, input validation guardrails, and an automated
 
 > **Link to Demo Walkthrough:** https://www.dropbox.com/scl/fi/vtvck8tv2766qj0phlmay/Lena-Ngo-Video-Demo-for-Project-4-Applied-AI-System.mp4?rlkey=y1rq81lrm1nk5etbz3xlgf7nu&st=tfv3y8uj&dl=0
 
+**I had to use the Windows Screen Recording Feature instead of Loom because Loom was giving me a lot of trouble. This is a public Dropbox link to my video demo!**
+
 ---
 
 ## Base Project
