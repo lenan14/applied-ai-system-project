@@ -147,7 +147,6 @@ class Scheduler:
         """Add a pet to be scheduled for"""
         if pet not in self.pets:
             self.pets.append(pet)
-        self.owner.add_pet(pet)
     
     def add_task(self, task: Task) -> None:
         """Add a task to the scheduler"""
@@ -214,16 +213,16 @@ class Scheduler:
         
         explanation = f"Daily Schedule for {self.owner.name} ({len(plan)} tasks):\n"
         explanation += f"Available time: {self.owner.daily_hours_available} hours\n"
-        explanation += "—" * 40 + "\n"
-        
+        explanation += "-" * 40 + "\n"
+
         total_time = 0
         for i, task in enumerate(plan, 1):
             pet_str = f" ({task.assigned_pet})" if task.assigned_pet else ""
             explanation += f"{i}. {task.name}{pet_str}\n"
             explanation += f"   Duration: {task.duration_minutes} min | Priority: {task.priority}/5\n"
             total_time += task.duration_minutes
-        
-        explanation += "—" * 40 + "\n"
+
+        explanation += "-" * 40 + "\n"
         explanation += f"Total time needed: {total_time} minutes ({total_time/60:.1f} hours)\n"
         
         available_minutes = int(self.owner.daily_hours_available * 60)
