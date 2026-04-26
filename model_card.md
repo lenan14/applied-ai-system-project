@@ -21,7 +21,7 @@ between 0.0 and 1.0.
 
 ### How AI was used in this project
 
-Claude Code was used throughout development for help with complicated code, debugging, and design
+Claude Code was used throughout development for help with complicated code, debugging, and difficult design
 decisions. Specific uses included generating the initial structure for `rag_engine.py`,
 suggesting the paragraph-level chunking strategy for the knowledge base, and drafting
 the system prompt for `ai_advisor.py`.
@@ -35,7 +35,8 @@ for this use case.
 
 When asked how to handle the case where the Gemini API is unavailable, Claude Code suggested
 implementing a rule-based fallback function that generates basic care reminders without
-any API call. I didn't think of it as first, and this was genuinely helpful because it made the system more robust and improved the user experience significantly. Without a fallback, the app would display an unhelpful error message whenever the API key was missing or the rate limit was hit.
+any API call. I didn't think of it at first, and this was pretty helpful because it made the system more robust and improved the user experience significantly. Without a fallback, the app would display an unhelpful error message whenever the API key was missing or the rate limit was hit.
+
 The fallback approach was adopted exactly as suggested and is now part of `ai_advisor.py`.
 
 ### One instance where the AI suggestion was flawed

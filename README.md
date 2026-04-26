@@ -3,7 +3,7 @@
 An intelligent pet care planning assistant extended with Retrieval-Augmented Generation (RAG),
 Gemini AI-powered recommendations, input validation guardrails, and an automated evaluation harness.
 
-> **Loom demo walkthrough:** _[Add your Loom link here before submitting]_
+> **Link to Demo Walkthrough:** https://www.dropbox.com/scl/fi/vtvck8tv2766qj0phlmay/Lena-Ngo-Video-Demo-for-Project-4-Applied-AI-System.mp4?rlkey=y1rq81lrm1nk5etbz3xlgf7nu&st=tfv3y8uj&dl=0
 
 ---
 
@@ -66,7 +66,7 @@ User input (pet profile + tasks)
 ### Prerequisites
 
 - Python 3.10 or higher
-- A Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com), no credit card required)
+- A Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com), no credit card required thankfully)
 
 ### Install
 
@@ -256,8 +256,8 @@ improved specificity.
 
 ## Reflection
 
-See [model_card.md](./model_card.md) for the full reflection on AI collaboration, system
-limitations, ethics, and testing results.
+See [model_card.md](./model_card.md) for my full reflection on AI collaboration, system
+limitations, ethics, and testing results!
 
 ---
 
@@ -292,4 +292,4 @@ applied-ai-system-final/
 
 ## License
 
-Educational project for CodePath AI Module 5 Final Project.
+Educational project for CodePath AI Module 9 Final Project.
